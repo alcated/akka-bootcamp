@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 ﻿using Akka.Actor;
 
 namespace WinTail
@@ -11,7 +11,7 @@ namespace WinTail
         static void Main(string[] args)
         {
             // initialize MyActorSystem
-            // YOU NEED TO FILL IN HERE
+            MyActorSystem = ActorSystem.Create("MyActorSystem");
 
             PrintInstructions();
 
