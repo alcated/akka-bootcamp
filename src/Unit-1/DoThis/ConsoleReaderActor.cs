@@ -9,6 +9,7 @@ namespace WinTail
     /// </summary>
     class ConsoleReaderActor : UntypedActor
     {
+        public const string StartCommand = "start";
         public const string ExitCommand = "exit";
         private IActorRef _consoleWriterActor;
 
