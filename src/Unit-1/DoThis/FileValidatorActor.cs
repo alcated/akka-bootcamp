@@ -35,7 +35,7 @@ namespace WinTail
                 if (valid)
                 {
                     // signal successful input
-                    consoleWriterActor.Tell(new Messages.InputSuccess(string.Format("Starting processing for {0}", msg));
+                    consoleWriterActor.Tell(new Messages.InputSuccess(string.Format("Starting processing for {0}", msg)));
 
                     // start coordinator
                     tailCoordinatorActor.Tell((new TailCoordinatorActor.StartTail(msg, consoleWriterActor)));
