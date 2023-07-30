@@ -58,15 +58,21 @@ namespace WinTail
 
         private readonly IActorRef reporterActor;
         private readonly string filePath;
-        private readonly FileObserver observer;
-        private readonly FileStream fileStream;
-        private readonly StreamReader fileStreamReader;
+        private FileObserver observer;
+        private FileStream fileStream;
+        private StreamReader fileStreamReader;
 
         public TailActor(IActorRef reporterActor, string filePath)
         {
             this.reporterActor = reporterActor;
             this.filePath = filePath;
+        }
 
+        /// <summary>
+        /// Initialization logic for actor that will tail changes to a file.
+        /// </summary>
+        protected override void PreStart()
+        {
             //start watching file for changes
 
             observer = new FileObserver(Self, Path.GetFullPath(this.filePath));
