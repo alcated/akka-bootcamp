@@ -88,6 +88,20 @@ namespace WinTail
             Self.Tell(new InitialRead(filePath, text));
         }
 
+        // TailActor.cs
+        /// <summary>
+        /// Cleanup OS handles for <see cref="_fileStreamReader"/> 
+        /// and <see cref="FileObserver"/>.
+        /// </summary>
+        protected override void PostStop()
+        {
+            observer.Dispose();
+            observer = null;
+            fileStreamReader.Close();
+            fileStream.Dispose();
+            base.PostStop();
+        }
+
         protected override void OnReceive(object message)
         {
             if (message is FileWrite)
