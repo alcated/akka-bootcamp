@@ -10,7 +10,11 @@ namespace WinTail
     class TailActor : UntypedActor
     {
         #region Message types
-        class FileWrite
+        /// <summary>
+        /// Signal that the file has changed, and we need to 
+        /// read the next line of the file.
+        /// </summary>
+        public class FileWrite
         {
             public FileWrite(string fileName)
             {
@@ -23,7 +27,7 @@ namespace WinTail
         /// <summary>
         /// Signal that the OS had an error accessing the file.
         /// </summary>
-        class FileError
+        public class FileError
         {
             public FileError(string fileName, string reason)
             {
@@ -87,9 +91,10 @@ namespace WinTail
                 // pull results from cursor to end of file and write to output
                 // (this is assuming a log file type format that is append-only)
                 var text = fileStreamReader.ReadToEnd();
-                if (!string.IsNullOrEmpty(text)){
+                if (!string.IsNullOrEmpty(text))
+                {
                     reporterActor.Tell(text);
-                }                
+                }
             }
             else if (message is FileError)
             {
