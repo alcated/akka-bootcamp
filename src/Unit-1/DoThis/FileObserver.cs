@@ -29,6 +29,9 @@ namespace WinTail
         /// </summary>
         public void Start()
         {
+            // Need this for Mono 3.12.0 workaround
+            // uncomment next line if you're running on Mono!
+            // Environment.SetEnvironmentVariable("MONO_MANAGED_WATCHER", "enabled");
 
             // make watcher to obverse our specific file
             this.watcher = new FileSystemWatcher(fileDir, fileNameOnly);
@@ -60,7 +63,7 @@ namespace WinTail
         /// <param name="e"></param>
         void OnFileError(object sender, ErrorEventArgs e)
         {
-            tailActor.Tell(new TailActor.FileError(fileNameOnly, e.GetException().Message));
+            tailActor.Tell(new TailActor.FileError(fileNameOnly, e.GetException().Message), ActorRefs.NoSender);
         }
 
         /// <summary>
