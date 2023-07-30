@@ -80,7 +80,6 @@ namespace WinTail
             // read the initial contents of the file and send it to console as first msg
             var text = fileStreamReader.ReadToEnd();
             Self.Tell(new InitialRead(filePath, text));
-
         }
 
         protected override void OnReceive(object message)
