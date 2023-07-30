@@ -11,12 +11,6 @@ namespace WinTail
     {
         public const string StartCommand = "start";
         public const string ExitCommand = "exit";
-        private IActorRef _validationActor;
-
-        public ConsoleReaderActor(IActorRef validationActor)
-        {
-            _validationActor = validationActor;
-        }
 
         protected override void OnReceive(object message)
         {
@@ -49,8 +43,7 @@ namespace WinTail
                 return;
             }
             // otherwise jsut had message off to validation actor
-            // (by telling its actor ref)
-            _validationActor.Tell(message);
+            Context.ActorSelection("akka://MyActorSystem/user/validationActor").Tell(message);
         }
         #endregion
     }
