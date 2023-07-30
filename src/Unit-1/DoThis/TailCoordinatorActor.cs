@@ -1,9 +1,10 @@
+using System;
 using Akka.Actor;
 
 namespace WinTail
 {
     class TailCoordinatorActor : UntypedActor
-    {        
+    {
         #region Message types
         /// <summary>
         /// Start tailing the file at user-specified path
@@ -43,6 +44,25 @@ namespace WinTail
                 // of this instance of TailCoordinatorActor
                 Context.ActorOf(Props.Create(() => new TailActor(msg.ReporterActor, msg.FilePath)));
             }
+        }
+
+
+        protected override SupervisorStrategy SupervisorStrategy()
+        {
+            return new OneForOneStrategy(
+              10, // maxNumberOfRetries
+              TimeSpan.FromSeconds(30), // withinTimeRange
+              x => // localOnlyDecider
+              {
+                  // Maybe we consider ArithmeticException to not be application critical
+                  if (x is ArithmeticException) return Directive.Resume;
+
+                  // Error that cannot recover from, stop the failling actor
+                  else if (x is NotSupportedException) return Directive.Stop;
+
+                  // In all other cases, just restart the failing actor
+                  else return Directive.Restart;
+              });
         }
     }
 }
