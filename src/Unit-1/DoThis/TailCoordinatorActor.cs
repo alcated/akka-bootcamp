@@ -38,7 +38,10 @@ namespace WinTail
             if (message is StartTail)
             {
                 var msg = message as StartTail;
-                // YOU NEED TO FILL IN HERE
+                // here we are creating our first parent/child relationship!
+                // the TailActor instance created here is a child
+                // of this instance of TailCoordinatorActor
+                Context.ActorOf(Props.Create(() => new TailActor(msg.ReporterActor, msg.FilePath)));
             }
         }
     }
