@@ -58,15 +58,21 @@ namespace WinTail
 
         private readonly IActorRef reporterActor;
         private readonly string filePath;
-        private readonly FileObserver observer;
-        private readonly FileStream fileStream;
-        private readonly StreamReader fileStreamReader;
+        private FileObserver observer;
+        private FileStream fileStream;
+        private StreamReader fileStreamReader;
 
         public TailActor(IActorRef reporterActor, string filePath)
         {
             this.reporterActor = reporterActor;
             this.filePath = filePath;
+        }
 
+        /// <summary>
+        /// Initialization logic for actor that will tail changes to a file.
+        /// </summary>
+        protected override void PreStart()
+        {
             //start watching file for changes
 
             observer = new FileObserver(Self, Path.GetFullPath(this.filePath));
@@ -80,6 +86,20 @@ namespace WinTail
             // read the initial contents of the file and send it to console as first msg
             var text = fileStreamReader.ReadToEnd();
             Self.Tell(new InitialRead(filePath, text));
+        }
+
+        // TailActor.cs
+        /// <summary>
+        /// Cleanup OS handles for <see cref="_fileStreamReader"/> 
+        /// and <see cref="FileObserver"/>.
+        /// </summary>
+        protected override void PostStop()
+        {
+            observer.Dispose();
+            observer = null;
+            fileStreamReader.Close();
+            fileStream.Dispose();
+            base.PostStop();
         }
 
         protected override void OnReceive(object message)
